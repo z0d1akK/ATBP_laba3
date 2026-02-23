@@ -23,10 +23,8 @@ public class TransportController {
 
     @GetMapping("/cards/{cardId}")
     public ResponseEntity<?> checkCard(@PathVariable String cardId) {
-
         CardStatus status = cardService.checkStatus(cardId);
         double balance = cardService.getBalance(cardId);
-
         return ResponseEntity.ok(Map.of(
                 "status", status,
                 "balance", balance
@@ -37,30 +35,23 @@ public class TransportController {
     public ResponseEntity<?> ride(@RequestBody RideRequest request) {
 
         try {
-
             double price = fareCalculator.calculateFare(
                     request.getZones(),
                     request.getTicketType(),
                     request.getCardId()
             );
-
             return ResponseEntity.ok(Map.of(
                     "status", "success",
                     "price", price
             ));
-
         } catch (IllegalStateException e) {
-
             if (e.getMessage().contains("заблокирована")) {
                 return ResponseEntity.status(403)
                         .body(Map.of("error", e.getMessage()));
             }
-
             return ResponseEntity.badRequest()
                     .body(Map.of("error", e.getMessage()));
-
         } catch (IllegalArgumentException e) {
-
             return ResponseEntity.badRequest()
                     .body(Map.of("error", e.getMessage()));
         }
