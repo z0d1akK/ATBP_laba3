@@ -31,7 +31,6 @@ class TransportControllerTest {
         @Test
         @DisplayName("1 зона, взрослый билет 100р")
         void shouldReturn100ForOneZone() throws Exception {
-
             Mockito.when(cardService.checkStatus("CARD1"))
                     .thenReturn(CardStatus.ACTIVE);
             Mockito.when(cardService.getBalance("CARD1"))

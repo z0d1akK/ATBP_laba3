@@ -56,4 +56,12 @@ public class TransportController {
                     .body(Map.of("error", e.getMessage()));
         }
     }
+
+    @GetMapping("/status")
+    public ResponseEntity<?> status() {
+        return ResponseEntity.ok(Map.of(
+                "status", "online",
+                "timestamp", new java.util.Date()
+        ));
+    }
 }

@@ -7,5 +7,4 @@ public class RideRequest {
     private int zones;
     private String ticketType;
     private String cardId;
-
 }
