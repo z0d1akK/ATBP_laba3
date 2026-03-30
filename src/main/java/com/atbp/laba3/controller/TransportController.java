@@ -33,16 +33,19 @@ public class TransportController {
 
     @PostMapping("/transport/ride")
     public ResponseEntity<?> ride(@RequestBody RideRequest request) {
-
         try {
             double price = fareCalculator.calculateFare(
                     request.getZones(),
                     request.getTicketType(),
                     request.getCardId()
             );
+
+            double newBalance = cardService.getBalance(request.getCardId());
+
             return ResponseEntity.ok(Map.of(
                     "status", "success",
-                    "price", price
+                    "price", price,
+                    "balance", newBalance
             ));
         } catch (IllegalStateException e) {
             if (e.getMessage().contains("заблокирована")) {
@@ -63,5 +66,11 @@ public class TransportController {
                 "status", "online",
                 "timestamp", new java.util.Date()
         ));
+    }
+
+    @PostMapping("/reset")
+    public ResponseEntity<?> reset() {
+        cardService.resetToInitialState();
+        return ResponseEntity.ok(Map.of("status", "reset completed"));
     }
 }
