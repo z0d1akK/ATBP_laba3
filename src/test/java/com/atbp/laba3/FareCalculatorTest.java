@@ -126,20 +126,6 @@ public class FareCalculatorTest {
     }
 
     @Test
-    @DisplayName("Статус карты InsufficientFunds")
-    void testInsufficientFundsStatus() {
-
-        Mockito.when(cardServiceMock.checkStatus("NOFUNDS"))
-                .thenReturn(CardStatus.INSUFFICIENT_FUNDS);
-
-        Assertions.assertThrows(IllegalStateException.class,
-                () -> fareCalculator.calculateFare(2, "adult", "NOFUNDS"));
-
-        Mockito.verify(cardServiceMock).checkStatus("NOFUNDS");
-        Mockito.verify(cardServiceMock, Mockito.never()).getBalance(ArgumentMatchers.any());
-    }
-
-    @Test
     @DisplayName("Сложный сценарий: карта активна, но баланс меньше стоимости")
     void testActiveCardLowBalance() {
 

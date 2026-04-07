@@ -1,4 +1,3 @@
-// FareCalculator.java
 package com.atbp.laba3;
 
 import com.atbp.laba3.card.CardService;
