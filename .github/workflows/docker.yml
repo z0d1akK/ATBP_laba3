@@ -8,9 +8,11 @@ on:
 permissions:
   contents: read
   packages: write
+  pages: write
+  id-token: write
 
 env:
-  IMAGE_NAME: ghcr.io/${{ github.repository_owner }}
+  OWNER: ${{ github.repository_owner }}
 
 jobs:
   test-build:
@@ -40,6 +42,7 @@ jobs:
           path: |
             target/surefire-reports/
             target/cucumber-reports.*
+            target/site/**
 
   docker:
     needs: test-build
@@ -58,10 +61,10 @@ jobs:
       - name: Build JAR
         run: mvn clean package -DskipTests
 
-      - name: Set lowercase image name
+      - name: Normalize repo name (LOWERCASE SAFE)
         run: |
-          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "IMAGE=ghcr.io/${OWNER_LOWER}/atbp-laba3/backend:latest" >> $GITHUB_ENV
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "IMAGE=ghcr.io/${OWNER}/atbp-laba3/backend:latest" >> $GITHUB_ENV
 
       - name: Login GHCR
         run: echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
