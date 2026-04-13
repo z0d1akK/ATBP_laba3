@@ -77,35 +77,35 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE
 
-publish-allure:
-  needs: [test-build, docker]
-  runs-on: ubuntu-latest
-  if: always()
+  publish-allure:
+    needs: [test-build, docker]
+    runs-on: ubuntu-latest
+    if: always()
 
-  steps:
-    - uses: actions/checkout@v4
+    steps:
+      - uses: actions/checkout@v4
 
-    - name: Download backend results
-      uses: actions/download-artifact@v4
-      with:
-        name: backend-results
-        path: backend-results
+      - name: Download backend results
+        uses: actions/download-artifact@v4
+        with:
+          name: backend-results
+          path: backend-results
 
-    - name: Install Allure CLI
-      run: npm install -g allure-commandline --unsafe-perm=true
+      - name: Install Allure CLI
+        run: npm install -g allure-commandline --unsafe-perm=true
 
-    - name: Generate Allure report
-      run: allure generate backend-results --clean -o allure-report
+      - name: Generate Allure report
+        run: allure generate backend-results --clean -o allure-report
 
-    - name: Fix Pages structure
-      run: |
-        cp -r allure-report/* .
-        rm -rf allure-report
+      - name: Fix Pages structure
+        run: |
+          cp -r allure-report/* .
+          rm -rf allure-report
 
-    - name: Upload Pages artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        path: .
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
 
   deploy-pages:
     needs: publish-allure
