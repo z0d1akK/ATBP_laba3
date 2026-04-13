@@ -77,35 +77,35 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE
 
-  publish-allure:
-    needs: [test-build, docker]
-    runs-on: ubuntu-latest
-    if: always()
+publish-allure:
+  needs: [test-build, docker]
+  runs-on: ubuntu-latest
+  if: always()
 
-    steps:
-      - uses: actions/checkout@v4
+  steps:
+    - uses: actions/checkout@v4
 
-      - name: Download backend results
-        uses: actions/download-artifact@v4
-        with:
-          name: backend-results
-          path: backend-results
-        continue-on-error: true
+    - name: Download backend results
+      uses: actions/download-artifact@v4
+      with:
+        name: backend-results
+        path: backend-results
 
-      - name: Check results folder
-        run: ls -R backend-results || echo "No results found"
+    - name: Install Allure CLI
+      run: npm install -g allure-commandline --unsafe-perm=true
 
-      - name: Install Allure CLI
-        run: npm install -g allure-commandline --unsafe-perm=true
+    - name: Generate Allure report
+      run: allure generate backend-results --clean -o allure-report
 
-      - name: Generate Allure report
-        run: |
-          allure generate backend-results --clean -o allure-report || echo "No report generated"
+    - name: Fix Pages structure
+      run: |
+        cp -r allure-report/* .
+        rm -rf allure-report
 
-      - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: allure-report
+    - name: Upload Pages artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: .
 
   deploy-pages:
     needs: publish-allure
@@ -132,8 +132,8 @@ jobs:
           if [ "${{ needs.test-build.result }}" != "success" ] || [ "${{ needs.docker.result }}" != "success" ]; then
             STATUS="FAILED"
           fi
-
-          REPORT_URL="https://${{ env.OWNER }}.github.io/${{ env.REPO }}/allure-report/"
+          
+          REPORT_URL="https://${{ env.OWNER }}.github.io/${{ env.REPO }}/"
 
           MESSAGE="Backend CI finished%0A\
           Status: $STATUS%0A\
