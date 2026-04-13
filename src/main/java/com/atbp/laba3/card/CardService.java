@@ -5,5 +5,4 @@ public interface CardService {
     double getBalance(String cardId);
     void deductBalance(String cardId, double amount);
     void resetToInitialState();
-
 }
