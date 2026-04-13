@@ -109,8 +109,11 @@
                         <include>**/*Tests.java</include>
                         <include>**/CucumberTestRunner.java</include>
                     </includes>
+
                     <systemPropertyVariables>
-                        <allure.results.directory>${project.build.directory}/allure-results</allure.results.directory>
+                        <allure.results.directory>
+                            ${project.build.directory}/allure-results
+                        </allure.results.directory>
                     </systemPropertyVariables>
                 </configuration>
             </plugin>

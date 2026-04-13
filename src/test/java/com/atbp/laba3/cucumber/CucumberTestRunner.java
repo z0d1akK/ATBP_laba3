@@ -16,9 +16,7 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
         key = PLUGIN_PROPERTY_NAME,
         value =
                 "pretty, " +
-                        "html:target/cucumber-reports.html, " +
-                        "json:target/cucumber-reports.json, " +
+                        "json:target/cucumber.json, " +
                         "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
 )
-public class CucumberTestRunner {
-}
+public class CucumberTestRunner {}

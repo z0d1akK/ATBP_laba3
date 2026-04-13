@@ -36,31 +36,16 @@ jobs:
       - name: Build JAR
         run: mvn clean package -DskipTests
 
-      #      - name: Ensure Allure results exist
-      #        run: mkdir -p target/allure-results
-
-      - name: Ensure Allure results exist
-        run: |
-          mkdir -p target/allure-results
-          ls -R target || true
-
-    #      - name: Upload backend results
-    #        uses: actions/upload-artifact@v4
-    #        with:
-    #          name: backend-results
-    ##          path: target
-    #          path: target/allure-results
-    #          retention-days: 7
+      - name: Debug Allure output
+        run: ls -R target || true
 
       - name: Upload backend results
-        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: backend-results
           path: target/allure-results
           retention-days: 7
           if-no-files-found: error
-
 
   docker:
     needs: test-build
@@ -93,43 +78,6 @@ jobs:
       - name: Push Docker image
         run: docker push $IMAGE
 
-
-#  publish-allure:
-#    needs: test-build
-#    runs-on: ubuntu-latest
-#    if: always()
-#
-#    steps:
-#      - uses: actions/checkout@v4
-#
-#      - name: Download artifact
-#        uses: actions/download-artifact@v4
-#        with:
-#          name: backend-results
-#          path: backend-results
-#
-#      - name: Install Allure CLI
-#        run: npm install -g allure-commandline --unsafe-perm=true
-#
-#      - name: Generate Allure report
-#        run: |
-#          allure generate backend-results --clean -o allure-report
-#
-#      #      - name: Generate Allure report
-#      #        run: |
-#      #          allure generate backend-results/target/allure-results \
-#      #            --clean -o allure-report
-#
-#      - name: Prepare Pages structure
-#        run: |
-#          mkdir -p public
-#          cp -r allure-report/* public/
-#
-#      - name: Upload Pages artifact
-#        uses: actions/upload-pages-artifact@v3
-#        with:
-#          path: public
-
   publish-allure:
     needs: test-build
     runs-on: ubuntu-latest
@@ -143,20 +91,23 @@ jobs:
           name: backend-results
           path: backend-results
 
-      - name: Check files
-        run: ls -R backend-results
+      - name: Check downloaded results
+        run: ls -R backend-results || true
 
       - name: Install Allure CLI
         run: npm install -g allure-commandline --unsafe-perm=true
 
-      - name: Generate report
+      - name: Generate Allure report
         run: allure generate backend-results --clean -o allure-report
 
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: allure-report
 
   deploy-pages:
     needs: publish-allure
     runs-on: ubuntu-latest
-    if: always()
 
     permissions:
       pages: write
@@ -166,9 +117,8 @@ jobs:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
 
-
   notify:
-    needs: [ test-build, docker, publish-allure ]
+    needs: [test-build, docker, publish-allure]
     runs-on: ubuntu-latest
     if: always()
 
@@ -188,7 +138,7 @@ jobs:
           Repo: ${{ github.repository }}%0A\
           Allure report: $REPORT_URL%0A\
           Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          
-               curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+  
+              curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
                   -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
                   -d text="$MESSAGE"
