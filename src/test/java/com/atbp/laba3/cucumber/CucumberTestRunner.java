@@ -14,9 +14,6 @@ import static io.cucumber.junit.platform.engine.Constants.PLUGIN_PROPERTY_NAME;
 @ConfigurationParameter(key = GLUE_PROPERTY_NAME, value = "com.atbp.laba3.cucumber.stepdefs")
 @ConfigurationParameter(
         key = PLUGIN_PROPERTY_NAME,
-        value =
-                "pretty, " +
-                        "json:target/cucumber.json, " +
-                        "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
+        value = "pretty, html:target/cucumber-reports.html, json:target/cucumber-reports.json, io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm"
 )
 public class CucumberTestRunner {}

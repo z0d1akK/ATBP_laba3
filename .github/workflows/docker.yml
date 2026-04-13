@@ -34,7 +34,7 @@ jobs:
         run: mvn clean test
 
       - name: Build JAR
-        run: mvn clean package -DskipTests
+        run: mvn clean package
 
       - name: Debug Allure output
         run: ls -R target || true
@@ -62,7 +62,7 @@ jobs:
           cache: maven
 
       - name: Build JAR
-        run: mvn clean package -DskipTests
+        run: mvn clean package
 
       - name: Normalize image name
         run: |
