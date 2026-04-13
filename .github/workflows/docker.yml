@@ -1,4 +1,4 @@
-name: Build Backend Docker
+name: Backend CI
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   packages: write
 
 env:
-  IMAGE: ghcr.io/z0d1akk/atbp-laba3/backend:latest
+  IMAGE: ghcr.io/z0d1akk/atbp_laba3/backend:latest
 
 jobs:
   build:
@@ -34,5 +34,5 @@ jobs:
       - name: Build Docker image
         run: docker build -t $IMAGE .
 
-      - name: Push image
+      - name: Push Docker image
         run: docker push $IMAGE
