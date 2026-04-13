@@ -110,6 +110,7 @@ jobs:
   deploy-pages:
     needs: publish-allure
     runs-on: ubuntu-latest
+    if: always() && needs.publish-allure.result == 'success'
     permissions:
       pages: write
       id-token: write
@@ -134,7 +135,7 @@ jobs:
 
           REPORT_URL="https://${{ env.OWNER }}.github.io/${{ env.REPO }}/allure-report/"
 
-          MESSAGE="🚀 Backend CI finished%0A\
+          MESSAGE="Backend CI finished%0A\
           Status: $STATUS%0A\
           Repo: ${{ github.repository }}%0A\
           Allure report: $REPORT_URL%0A\
