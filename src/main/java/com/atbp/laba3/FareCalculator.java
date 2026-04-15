@@ -11,6 +11,7 @@ public class FareCalculator {
         this.cardService = cardService;
     }
 
+
     public double calculateFare(int zones, String ticketType, String cardId) {
         CardStatus status = cardService.checkStatus(cardId);
         if (status == CardStatus.BLOCKED) {
